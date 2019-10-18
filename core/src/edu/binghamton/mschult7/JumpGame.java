@@ -33,7 +33,7 @@ public class JumpGame extends ApplicationAdapter {
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		render = new ShapeRenderer();
 		coord = new Vector3((Gdx.graphics.getWidth() /2), Gdx.graphics.getHeight() / 2, 0);
-		boxWidth = new Vector3(0,100,0);
+		boxWidth = new Vector3(0,100,100);
 		Jump = false;
 	}
 
@@ -51,23 +51,34 @@ public class JumpGame extends ApplicationAdapter {
 		render.begin(ShapeRenderer.ShapeType.Filled);
 		render.setColor(Color.BLUE);
 		render.rect((Gdx.graphics.GetWidth() /2)+500,boxWidth.y,100,25);
-		boxWidth.set(boxWidth.x, boxWidth.y + 1,0);
 
+		if(boxWidth.y <= Gdx.graphics.getHeight() - boxWidth.z){
+			boxWidth.set(boxWidth.x, boxWidth.y + 1,boxWidth.z);
+		} else if(boxWidth.y >= Gdx.graphics.getHeight() - boxWidth.z){
+			boxWidth.set(boxWidth.x,boxWidth.y -1, boxWidth.z)
+		}
+
+
+		render.end();
 
 
 		render.begin(ShapeRenderer.ShapeType.Filled);
 		render.setColor(Color.GREEN);
 		float jumpSpeed = 15;
 		float jumpBoost = 0;
-		float jumpTop = (Gdx.graphics.getWidth()/2) + jumpBoost;
-		float base = (Gdx.graphics.getWidth() /2) + 500;
+		float jumpTop = (Gdx.graphics.getWidth()/2) - jumpBoost;
+		float base = (Gdx.graphics.getWidth());
 		if((int)coord.x <=  base && (int)coord.x > jumpTop && Jump){
 			coord.set(coord.x -jumpSpeed, coord.y,0);
 		} else if(Jump && (int)coord.x <= jumpTop){
 			Jump = false;
 		} else if(!Jump && (int)coord.x >= jumpTop-jumpSpeed && (int)coord.x < base){
 			coord.set(coord.x + jumpSpeed, coord.y, 0);
-		} else {
+		} else if(!Jump && (int)coord.x == (int)boxWidth.x && (int)coord.y == (int)boxWidth.y){
+			Jump = true;
+			boxWidth.set(boxWidth.x,boxWidth.y,boxWidth.z-10);
+		}
+		else {
 			coord.set(coord.x, coord.y, 0);
 		}
 		camera.unproject(coord);
