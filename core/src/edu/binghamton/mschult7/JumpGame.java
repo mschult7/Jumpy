@@ -23,6 +23,7 @@ public class JumpGame extends ApplicationAdapter {
 	OrthographicCamera camera;
 	ShapeRenderer render;
 	Vector3 coord;
+	Vector3 boxWidth;
 	Boolean Jump;
 
 
@@ -31,7 +32,8 @@ public class JumpGame extends ApplicationAdapter {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		render = new ShapeRenderer();
-		coord = new Vector3((Gdx.graphics.getWidth() /2) +500, Gdx.graphics.getHeight() / 2, 0);
+		coord = new Vector3((Gdx.graphics.getWidth() /2), Gdx.graphics.getHeight() / 2, 0);
+		boxWidth = new Vector3(0,100,0);
 		Jump = false;
 	}
 
@@ -44,6 +46,14 @@ public class JumpGame extends ApplicationAdapter {
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+
+		render.begin(ShapeRenderer.ShapeType.Filled);
+		render.setColor(Color.BLUE);
+		render.rect((Gdx.graphics.GetWidth() /2)+500,boxWidth.y,100,25);
+		boxWidth.set(boxWidth.x, boxWidth.y + 1,0);
+
+
 
 		render.begin(ShapeRenderer.ShapeType.Filled);
 		render.setColor(Color.GREEN);
