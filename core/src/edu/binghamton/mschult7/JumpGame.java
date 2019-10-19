@@ -25,6 +25,8 @@ public class JumpGame extends ApplicationAdapter {
 	Vector3 coord;
 	Vector3 boxWidth;
 	Boolean Jump;
+	Boolean left;
+	float jumpTop;
 
 
 	@Override
@@ -33,15 +35,19 @@ public class JumpGame extends ApplicationAdapter {
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		render = new ShapeRenderer();
 		coord = new Vector3((Gdx.graphics.getWidth() /2), Gdx.graphics.getHeight() / 2, 0);
-		boxWidth = new Vector3(0,100,100);
+		boxWidth = new Vector3(0,100,300);
 		Jump = false;
+		left = false;
+		jumpTop = 0;
 	}
 
 	@Override
 	public void render () {
+		float jumpHeight = 400;
 		camera.update();
 		if(Gdx.input.isTouched()){
 			Jump = true;
+			jumpTop = coord.x - jumpHeight;
 		}
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -50,12 +56,17 @@ public class JumpGame extends ApplicationAdapter {
 
 		render.begin(ShapeRenderer.ShapeType.Filled);
 		render.setColor(Color.BLUE);
-		render.rect((Gdx.graphics.GetWidth() /2)+500,boxWidth.y,100,25);
+		render.rect((Gdx.graphics.getWidth() /2)+500,boxWidth.y,25,boxWidth.z);
 
-		if(boxWidth.y <= Gdx.graphics.getHeight() - boxWidth.z){
-			boxWidth.set(boxWidth.x, boxWidth.y + 1,boxWidth.z);
-		} else if(boxWidth.y >= Gdx.graphics.getHeight() - boxWidth.z){
-			boxWidth.set(boxWidth.x,boxWidth.y -1, boxWidth.z)
+		float boxspeed = 10;
+		if(!left && boxWidth.y < Gdx.graphics.getHeight() - boxWidth.z){
+			boxWidth.set(boxWidth.x, boxWidth.y + boxspeed,boxWidth.z);
+		} else if(boxWidth.y <= 0){
+			left = false;
+		}else if(left){
+			boxWidth.set(boxWidth.x,boxWidth.y -boxspeed, boxWidth.z);
+		} else if(boxWidth.y == Gdx.graphics.getHeight() - boxWidth.z){
+			left = true;
 		}
 
 
@@ -65,10 +76,9 @@ public class JumpGame extends ApplicationAdapter {
 		render.begin(ShapeRenderer.ShapeType.Filled);
 		render.setColor(Color.GREEN);
 		float jumpSpeed = 15;
-		float jumpBoost = 0;
-		float jumpTop = (Gdx.graphics.getWidth()/2) - jumpBoost;
+
 		float base = (Gdx.graphics.getWidth());
-		if((int)coord.x <=  base && (int)coord.x > jumpTop && Jump){
+		if((int)coord.x > jumpTop && Jump){
 			coord.set(coord.x -jumpSpeed, coord.y,0);
 		} else if(Jump && (int)coord.x <= jumpTop){
 			Jump = false;
